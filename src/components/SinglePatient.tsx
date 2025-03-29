@@ -27,7 +27,7 @@ const toDiagnonsesArray = (arr: Diagnosis[] | undefined) => {
     }
 };
 
-const ShowEntry = (props: EntryProps) => {
+const HealthCheckEntry = (props: EntryProps) => {
     return (
         <>
         <p>{props.entry.date} {props.entry.description}</p>
@@ -39,6 +39,76 @@ const ShowEntry = (props: EntryProps) => {
         </>
     );
 };
+
+const HospitalEntry = (props: EntryProps) => {
+    return (
+        <>
+        <p>{props.entry.date} {props.entry.description}</p>
+        {props.entry.diagnosisCodes &&
+            <ul>
+            {props.entry.diagnosisCodes.map((entry, index) => <li key={index}>{entry} {getDiagnoses(entry, toDiagnonsesArray(props.diagnoses))}</li>)}
+        </ul>
+}
+        </>
+    );
+};
+
+const OccupationalEntry = (props: EntryProps) => {
+    return (
+        <>
+        <p>{props.entry.date} {props.entry.description}</p>
+        {props.entry.diagnosisCodes &&
+            <ul>
+            {props.entry.diagnosisCodes.map((entry, index) => <li key={index}>{entry} {getDiagnoses(entry, toDiagnonsesArray(props.diagnoses))}</li>)}
+        </ul>
+}
+        </>
+    );
+};
+
+const ShowEntry = (props: EntryProps) => {
+    /*
+    switch(props.entry.type){
+        case "HealthCheck":
+            return <HealthCheckEntry entry={props.entry} diagnoses={props.diagnoses}/>;
+        case "OccupationalHealthcare":
+            return <OccupationalEntry entry={props.entry} diagnoses={props.diagnoses} />;
+        case "Hospital":
+            return <HospitalEntry entry={props.entry} diagnoses={props.diagnoses} />;
+    }
+    */
+    return (
+        <>
+        <h3>{props.entry.date}</h3>
+        
+        <p>Type : {props.entry.type}</p>
+        <p>Description: {props.entry.description}</p>
+        <p>diagnosed by {props.entry.specialist}</p>
+        <h4>Diagnosis Codes</h4>
+        {props.entry.diagnosisCodes &&
+            <ul>
+            {props.entry.diagnosisCodes.map((entry, index) => <li key={index}>{entry} {getDiagnoses(entry, toDiagnonsesArray(props.diagnoses))}</li>)}
+        </ul>
+}
+        {
+            (props.entry.type === "HealthCheck") && 
+            <p>Health check rating: {props.entry.healthCheckRating}</p>
+            }
+        {
+            (props.entry.type === "Hospital") &&
+            <p>Discharge: {props.entry.discharge.date} {props.entry.discharge.criteria}</p>
+        }
+        {
+            (props.entry.type === "OccupationalHealthcare") &&
+            <p>Employer: {props.entry.employerName} </p>
+        }
+        { (props.entry.type === "OccupationalHealthcare") && (props.entry.sickLeave != undefined) && <p>Sickleave from: {props.entry.sickLeave.startDate} to: {props.entry.sickLeave.endDate}</p>}
+
+        </>
+    );
+};
+
+
 const SinglePatient = () => {
 
     const [patient, setPatient] = useState<Patient>();
@@ -65,7 +135,7 @@ const SinglePatient = () => {
         <p>ssn : {patient.ssn}</p>
         <p>occupation: {patient.occupation}</p>
         <h3>entries</h3>
-        {patient.entries.map(entry => <ShowEntry entry={entry} diagnoses={diagnoses} />)}
+        {patient.entries.map((entry, index) => <ShowEntry key={index} entry={entry} diagnoses={diagnoses} />)}
         </>
     );
 }
